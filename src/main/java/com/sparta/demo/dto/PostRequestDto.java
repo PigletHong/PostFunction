@@ -9,9 +9,8 @@ import lombok.Setter;
 @Setter
 
 public class PostRequestDto {
-    private String name;
+    private String username;
     private String content;
     private String title;
-    private String password;
 }
 

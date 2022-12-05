@@ -12,10 +12,9 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor
 public class PostResponseDto {
-    private String name;
+    private String username;
     private String content;
     private String title;
-    private String password;
     private Long id;
     @CreatedDate
     private LocalDateTime createdAt;
@@ -24,10 +23,9 @@ public class PostResponseDto {
     private LocalDateTime modifiedAt;
 
     public PostResponseDto(Post post) {
-        this.name = post.getName();
+        this.username = post.getUsername();
         this.content = post.getContent();
         this.title = post.getTitle();
-        this.password = post.getPassword();
         this.id = post.getId();
         this.createdAt = post.getCreatedAt();
         this.modifiedAt = post.getModifiedAt();

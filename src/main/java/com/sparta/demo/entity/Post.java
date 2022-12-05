@@ -1,8 +1,6 @@
 package com.sparta.demo.entity;
 
-import com.sparta.demo.dto.PostListResponseDto;
 import com.sparta.demo.dto.PostRequestDto;
-import com.sparta.demo.dto.PostResponseDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,25 +10,27 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Post extends com.sparta.demo.entity.Timestamped {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(nullable = false)
     private String title;
-    private String name;
-    private String password;
+    @Column(nullable = false)
+    private String username;
+    @Column(nullable = false)
     private String content;
+    @Column(nullable = false)
+    private Long userId;
 
 
-    public Post(PostRequestDto requestDto) {
-        this.name = requestDto.getName();
+    public Post(PostRequestDto requestDto, Long userId) {
+        this.username = requestDto.getUsername();
         this.content = requestDto.getContent();
         this.title = requestDto.getTitle();
-        this.password = requestDto.getPassword();
+        this.userId = userId;
     }
 
     public void update(PostRequestDto responseDto) {
         this.title = responseDto.getTitle();
         this.content = responseDto.getContent();
-        this.name = responseDto.getName();
-        this.password = responseDto.getPassword();
     }
 }

@@ -1,7 +1,10 @@
 package com.sparta.demo.controller;
 
 import com.sparta.demo.dto.*;
+import com.sparta.demo.jwt.JwtUtil;
+import com.sparta.demo.repository.PostRepository;
 import com.sparta.demo.service.PostService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,10 +14,12 @@ import org.springframework.web.bind.annotation.*;
 public class PostController {
 
     private final PostService postService;
+    private final JwtUtil jwtUtil;
+    private final PostRepository postRepository;
 
     @PostMapping("/save/posts")
-    public ResponseDto savePosts(@RequestBody PostRequestDto requestDto) {
-        return postService.savePost(requestDto);
+    public PostResponseDto savePosts(@RequestBody PostRequestDto requestDto, HttpServletRequest request) {
+        return postService.savePosts(requestDto, request);
     }
 
     @GetMapping("/get/posts")
@@ -28,12 +33,12 @@ public class PostController {
     }
 
     @PutMapping("/update/post/{id}")
-    public PostResponseDto updatePost(@PathVariable Long id, @RequestBody PostRequestDto requestDto) {
-        return postService.updatePost(id, requestDto);
+    public PostResponseDto updatePost(@PathVariable Long id, @RequestBody PostRequestDto requestDto, HttpServletRequest request) {
+        return postService.updatePost(id, requestDto, request);
     }
 
     @DeleteMapping("/delete/post/{id}")
-    public ResponseDto deletePost(@PathVariable Long id, @RequestBody DeleteRequestDto deleteRequestDto) {
-        return postService.deletePost(id, deleteRequestDto);
+    public ResponseDto deletePost(@PathVariable Long id, HttpServletRequest request) {
+        return postService.deletePost(id, request);
     }
 }

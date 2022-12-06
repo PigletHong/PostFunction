@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Getter
 @Entity
 @NoArgsConstructor
@@ -20,6 +22,10 @@ public class Post extends com.sparta.demo.entity.Timestamped {
     private String content;
     @Column(nullable = false)
     private Long userId;
+
+    @OneToMany(mappedBy = "post", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+    @OrderBy("id asc") // 댓글 정렬
+    private List<Comment> comments;
 
 
     public Post(PostRequestDto requestDto,String username, Long userId) {

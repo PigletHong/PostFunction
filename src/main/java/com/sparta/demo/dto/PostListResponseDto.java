@@ -1,21 +1,42 @@
 package com.sparta.demo.dto;
 
 
+import com.sparta.demo.entity.Post;
 import lombok.Getter;
-import org.springframework.http.HttpStatus;
+import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
-public class PostListResponseDto extends ResponseDto{
-    List<PostResponseDto> postList = new ArrayList<>();
+@NoArgsConstructor
+public class PostListResponseDto {
+//    private String username;
+//    private String content;
+//    private String title;
+//    private Long id;
+//
+//    private List<CommentResponseDto> comments;
+//    @CreatedDate
+//    private LocalDateTime createdAt;
+//
+//    @LastModifiedDate
+//    private LocalDateTime modifiedAt;
 
-    public PostListResponseDto(){
-        super("포스트 목록 조회 성공", HttpStatus.OK.value());
+    List<PostCommentResponseDto> postList = new ArrayList<>();
+
+    public PostListResponseDto(Post post) {
+//        this.username = post.getUsername();
+//        this.content = post.getContent();
+//        this.title = post.getTitle();
+//        this.id = post.getId();
+//        this.createdAt = post.getCreatedAt();
+//        this.modifiedAt = post.getModifiedAt();
+//        this.comments = post.getComments().stream().map(CommentResponseDto::new).collect(Collectors.toList());
     }
 
-    public void addPost(PostResponseDto responseDto) {
-        postList.add(responseDto);
+    public void addPost(PostCommentResponseDto postCommentResponseDto) {
+        postList.add(postCommentResponseDto);
     }
 }

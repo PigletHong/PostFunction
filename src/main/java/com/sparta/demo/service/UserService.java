@@ -6,10 +6,8 @@ import com.sparta.demo.entity.User;
 import com.sparta.demo.entity.UserRoleEnum;
 import com.sparta.demo.jwt.JwtUtil;
 import com.sparta.demo.repository.UserRepository;
-import jakarta.persistence.Column;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,7 +17,6 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserService {
 
-    @Autowired
     private final UserRepository userRepository;
     private final JwtUtil jwtUtil;
     private static final String ADMIN_TOKEN = "AAABnvxRVklrnYxKZ0aHgTBcXukeZygoC";
@@ -40,14 +37,13 @@ public class UserService {
         UserRoleEnum role = UserRoleEnum.USER;
         if (signupRequestDto.isAdmin()) {
             if (!signupRequestDto.getAdminkey().equals(ADMIN_TOKEN)) {
-//                throw new IllegalArgumentException("관리자 암호가 틀려 등록이 불가능합니다.");
                 role = UserRoleEnum.USER;
             } else {
                 role = UserRoleEnum.ADMIN;
             }
         }
 
-        User user = new User(username, password, role, adminkey);
+        User user = new User(username, password, role);
         userRepository.save(user);
     }
 

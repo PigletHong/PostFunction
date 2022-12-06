@@ -16,6 +16,7 @@ public class PostResponseDto {
     private String content;
     private String title;
     private Long id;
+
     @CreatedDate
     private LocalDateTime createdAt;
 
@@ -29,6 +30,5 @@ public class PostResponseDto {
         this.id = post.getId();
         this.createdAt = post.getCreatedAt();
         this.modifiedAt = post.getModifiedAt();
-
     }
 }

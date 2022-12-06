@@ -5,6 +5,7 @@ import com.sparta.demo.entity.Post;
 import com.sparta.demo.entity.User;
 import com.sparta.demo.entity.UserRoleEnum;
 import com.sparta.demo.jwt.JwtUtil;
+import com.sparta.demo.repository.CommentRepository;
 import com.sparta.demo.repository.PostRepository;
 //import jakarta.transaction.Transactional;
 import com.sparta.demo.repository.UserRepository;
@@ -17,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
-import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -29,7 +29,7 @@ public class PostService {
 
 
     @Transactional
-    public PostResponseDto savePosts(@RequestBody PostRequestDto requestDto, HttpServletRequest request) {
+    public PostResponseDto savePosts( PostRequestDto requestDto, HttpServletRequest request) {
         String token = jwtUtil.resolveToken(request);
         Claims claims;
 
@@ -56,12 +56,24 @@ public class PostService {
         }
     }
 
+//    @Transactional(readOnly = true)
+//    public PostCommentResponseDto getPosts() {
+//        PostCommentResponseDto postCommentResponseDto = new PostCommentResponseDto();
+//        PostCommentListDto postCommentListDto = null;
+//        List<Post> posts = postRepository.findAll();
+//        for (Post post : posts) {
+//            postCommentListDto.addPost((PostCommentResponseDto) new PostCommentResponseDto(post));
+//        }
+//        return postCommentListDto;
+//    }
+
     @Transactional(readOnly = true)
     public PostListResponseDto getPosts() {
+//        PostCommentResponseDto postCommentResponseDto = new PostCommentResponseDto();
         PostListResponseDto postListResponseDto = new PostListResponseDto();
         List<Post> posts = postRepository.findAll();
         for (Post post : posts) {
-            postListResponseDto.addPost(new PostResponseDto(post));
+            postListResponseDto.addPost(new PostCommentResponseDto(post));
         }
         return postListResponseDto;
     }
@@ -98,10 +110,12 @@ public class PostService {
                     () -> new RuntimeException("포스트가 없습니다.")
             );
 
-            if (!post.getUsername().equals(user.getUsername())) {
-                throw new IllegalArgumentException("작성자가 아닙니다.");
-            } else {
+            if (post.getUsername().equals(user.getUsername())) {
                 post.update(requestDto);
+            } else if(user.getRole().equals(UserRoleEnum.ADMIN)){
+                post.update(requestDto);
+            } else {
+                throw new IllegalArgumentException("권한이 없습니다.");
             }
 
 //            post.update(requestDto);
@@ -135,11 +149,14 @@ public class PostService {
                     () -> new RuntimeException("포스트가 없습니다.")
             );
 
-            if (!post.getUsername().equals(user.getUsername())) {
-                throw new IllegalArgumentException("작성자가 아닙니다.");
+            if (post.getUsername().equals(user.getUsername())) {
+                postRepository.delete(post);
+            } else if(user.getRole().equals(UserRoleEnum.ADMIN)){
+                postRepository.delete(post);
             } else {
-                postRepository.delete(post);;
+                throw new IllegalArgumentException("권한이 없습니다.");
             }
+
             return new ResponseDto("포스트 삭제 완료", HttpStatus.OK.value());
         } else {
             return null;

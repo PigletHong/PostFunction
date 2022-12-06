@@ -5,6 +5,7 @@ import com.sparta.demo.dto.ResponseDto;
 import com.sparta.demo.dto.SignupRequestDto;
 import com.sparta.demo.service.UserService;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -19,7 +20,7 @@ public class UserController {
 
     @ResponseBody
     @PostMapping("/signup")
-    public ResponseDto signup(@RequestBody SignupRequestDto signupRequestDto) {
+    public ResponseDto signup(@RequestBody @Valid SignupRequestDto signupRequestDto) {
         userService.signup(signupRequestDto);
         return new ResponseDto("성공했습니다", HttpStatus.OK.value());
     }

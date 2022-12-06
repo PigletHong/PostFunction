@@ -22,8 +22,8 @@ public class Post extends com.sparta.demo.entity.Timestamped {
     private Long userId;
 
 
-    public Post(PostRequestDto requestDto, Long userId) {
-        this.username = requestDto.getUsername();
+    public Post(PostRequestDto requestDto,String username, Long userId) {
+        this.username = username;
         this.content = requestDto.getContent();
         this.title = requestDto.getTitle();
         this.userId = userId;

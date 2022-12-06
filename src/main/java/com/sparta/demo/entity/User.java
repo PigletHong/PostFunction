@@ -1,14 +1,8 @@
 package com.sparta.demo.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.thymeleaf.expression.Lists;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Getter
 @NoArgsConstructor
@@ -31,11 +25,19 @@ public class User {
 //    @Pattern(regexp = "[A-Za-z0-9]*$", message = "패스워드 형식이 일치하지 않습니다.")
     private String password;
 
+    @Column(nullable = false)
+    @Enumerated(value = EnumType.STRING)
+    private UserRoleEnum role;
+
+    private String  adminkey;
 
 
-    public User(String username, String password) {
+
+    public User(String username, String password, UserRoleEnum role, String adminkey) {
         this.username = username;
         this.password = password;
+        this.role = role;
+        this.adminkey = this.adminkey;
     }
 
 }

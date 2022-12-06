@@ -3,6 +3,7 @@ package com.sparta.demo.service;
 import com.sparta.demo.dto.LoginRequestDto;
 import com.sparta.demo.dto.SignupRequestDto;
 import com.sparta.demo.entity.User;
+import com.sparta.demo.entity.UserRoleEnum;
 import com.sparta.demo.jwt.JwtUtil;
 import com.sparta.demo.repository.UserRepository;
 import jakarta.persistence.Column;
@@ -21,11 +22,13 @@ public class UserService {
     @Autowired
     private final UserRepository userRepository;
     private final JwtUtil jwtUtil;
+    private static final String ADMIN_TOKEN = "AAABnvxRVklrnYxKZ0aHgTBcXukeZygoC";
 
     @Transactional
     public void signup(SignupRequestDto signupRequestDto) {
         String username = signupRequestDto.getUsername();
         String password = signupRequestDto.getPassword();
+        String adminkey = signupRequestDto.getAdminkey();
 
         // 회원 중복 확인
         Optional<User> found = userRepository.findByUsername(username);
@@ -33,7 +36,18 @@ public class UserService {
             throw new IllegalArgumentException("중복된 사용자가 존재합니다.");
         }
 
-        User user = new User(username, password);
+        // 사용자 ROLE 확인
+        UserRoleEnum role = UserRoleEnum.USER;
+        if (signupRequestDto.isAdmin()) {
+            if (!signupRequestDto.getAdminkey().equals(ADMIN_TOKEN)) {
+//                throw new IllegalArgumentException("관리자 암호가 틀려 등록이 불가능합니다.");
+                role = UserRoleEnum.USER;
+            } else {
+                role = UserRoleEnum.ADMIN;
+            }
+        }
+
+        User user = new User(username, password, role, adminkey);
         userRepository.save(user);
     }
 

@@ -3,6 +3,7 @@ package com.sparta.demo.service;
 import com.sparta.demo.dto.*;
 import com.sparta.demo.entity.Post;
 import com.sparta.demo.entity.User;
+import com.sparta.demo.entity.UserRoleEnum;
 import com.sparta.demo.jwt.JwtUtil;
 import com.sparta.demo.repository.PostRepository;
 //import jakarta.transaction.Transactional;
@@ -16,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -96,9 +98,13 @@ public class PostService {
                     () -> new RuntimeException("포스트가 없습니다.")
             );
 
+            if (!post.getUsername().equals(user.getUsername())) {
+                throw new IllegalArgumentException("작성자가 아닙니다.");
+            } else {
+                post.update(requestDto);
+            }
 
-            post.update(requestDto);
-
+//            post.update(requestDto);
 
             return new PostResponseDto(post);
         } else {
@@ -128,8 +134,12 @@ public class PostService {
             Post post = postRepository.findById(id).orElseThrow(
                     () -> new RuntimeException("포스트가 없습니다.")
             );
-            postRepository.delete(post);
-            ;
+
+            if (!post.getUsername().equals(user.getUsername())) {
+                throw new IllegalArgumentException("작성자가 아닙니다.");
+            } else {
+                postRepository.delete(post);;
+            }
             return new ResponseDto("포스트 삭제 완료", HttpStatus.OK.value());
         } else {
             return null;

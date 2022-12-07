@@ -1,19 +1,19 @@
 package com.sparta.demo.entity;
 
+import com.sparta.demo.dto.CommentRequestDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 
-@Builder
+//@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Table(name = "comments")
 @Entity
+@Builder
 public class Comment extends Timestamped{
 
     @Id
@@ -33,4 +33,7 @@ public class Comment extends Timestamped{
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user; // 작성자
+    public void update(CommentRequestDto responseDto) {
+        this.comment = responseDto.getComment();
+    }
 }

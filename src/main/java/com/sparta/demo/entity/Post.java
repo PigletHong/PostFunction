@@ -33,6 +33,7 @@ public class Post extends com.sparta.demo.entity.Timestamped {
         this.content = requestDto.getContent();
         this.title = requestDto.getTitle();
         this.userId = userId;
+        this.comments = getComments();
     }
 
     public void update(PostRequestDto responseDto) {

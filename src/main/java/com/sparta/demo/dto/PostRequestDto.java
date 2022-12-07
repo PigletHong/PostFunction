@@ -14,6 +14,6 @@ public class PostRequestDto {
     private String username;
     private String content;
     private String title;
-    private List<CommentResponseDto> comments;
+//    private List<CommentResponseDto> comments;
 }
 

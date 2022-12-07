@@ -28,7 +28,7 @@ public class PostController {
     }
 
     @GetMapping("/get/post")
-    public PostResponseDto getPost(@RequestParam Long id) {
+    public PostListResponseDto getPost(@RequestParam Long id) {
         return postService.getPost(id);
     }
 

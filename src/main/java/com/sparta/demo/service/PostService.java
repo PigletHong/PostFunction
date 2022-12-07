@@ -5,7 +5,6 @@ import com.sparta.demo.entity.Post;
 import com.sparta.demo.entity.User;
 import com.sparta.demo.entity.UserRoleEnum;
 import com.sparta.demo.jwt.JwtUtil;
-import com.sparta.demo.repository.CommentRepository;
 import com.sparta.demo.repository.PostRepository;
 //import jakarta.transaction.Transactional;
 import com.sparta.demo.repository.UserRepository;
@@ -15,8 +14,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestBody;
 
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -29,7 +28,7 @@ public class PostService {
 
 
     @Transactional
-    public PostResponseDto savePosts( PostRequestDto requestDto, HttpServletRequest request) {
+    public PostResponseDto savePosts(PostRequestDto requestDto, HttpServletRequest request) {
         String token = jwtUtil.resolveToken(request);
         Claims claims;
 
@@ -48,7 +47,7 @@ public class PostService {
             );
 
             // 요청받은 DTO 로 DB에 저장할 객체 만들기
-            Post post = postRepository.saveAndFlush(new Post(requestDto,user.getUsername(), user.getId()));
+            Post post = postRepository.saveAndFlush(new Post(requestDto, user.getUsername(), user.getId()));
 
             return new PostResponseDto(post);
         } else {
@@ -56,20 +55,8 @@ public class PostService {
         }
     }
 
-//    @Transactional(readOnly = true)
-//    public PostCommentResponseDto getPosts() {
-//        PostCommentResponseDto postCommentResponseDto = new PostCommentResponseDto();
-//        PostCommentListDto postCommentListDto = null;
-//        List<Post> posts = postRepository.findAll();
-//        for (Post post : posts) {
-//            postCommentListDto.addPost((PostCommentResponseDto) new PostCommentResponseDto(post));
-//        }
-//        return postCommentListDto;
-//    }
-
     @Transactional(readOnly = true)
     public PostListResponseDto getPosts() {
-//        PostCommentResponseDto postCommentResponseDto = new PostCommentResponseDto();
         PostListResponseDto postListResponseDto = new PostListResponseDto();
         List<Post> posts = postRepository.findAll();
         for (Post post : posts) {
@@ -79,11 +66,15 @@ public class PostService {
     }
 
     @Transactional(readOnly = true)
-    public PostResponseDto getPost(Long id) {
-        Post post = postRepository.findById(id).orElseThrow(
+    public PostListResponseDto getPost(Long id) {
+        PostListResponseDto postListResponseDto = new PostListResponseDto();
+        List<Post> posts = Collections.singletonList(postRepository.findById(id).orElseThrow(
                 () -> new RuntimeException("포스트를 찾을 수 없습니다")
-        );
-        return new PostResponseDto(post);
+        ));
+        for (Post post : posts) {
+            postListResponseDto.addPost(new PostCommentResponseDto(post));
+        }
+        return postListResponseDto;
     }
 
 
@@ -117,8 +108,6 @@ public class PostService {
             } else {
                 throw new IllegalArgumentException("권한이 없습니다.");
             }
-
-//            post.update(requestDto);
 
             return new PostResponseDto(post);
         } else {

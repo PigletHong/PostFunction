@@ -12,6 +12,7 @@ public class BoardDto {
     private String title;
     private String username;
     private String content;
+    private int likeCnt;
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
 
@@ -22,6 +23,7 @@ public class BoardDto {
         this.title = board.getTitle();
         this.username = board.getUsername();
         this.content = board.getContent();
+        this.likeCnt = board.getLikeCnt();
         this.createdAt = board.getCreatedAt();
         this.modifiedAt = board.getModifiedAt();
     }
@@ -31,6 +33,7 @@ public class BoardDto {
         this.title = board.getTitle();
         this.username = board.getUsername();
         this.content = board.getContent();
+        this.likeCnt = board.getLikeCnt();
         this.createdAt = board.getCreatedAt();
         this.modifiedAt = board.getModifiedAt();
         this.commentList = commentList;

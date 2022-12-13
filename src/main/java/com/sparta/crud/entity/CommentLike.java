@@ -22,7 +22,7 @@ public class CommentLike extends Timestamped{
     private User user;
 
     public CommentLike(Comment comment, User user){
-        this.comment = comment;
-        this.user = user;
+        this.comment = comment; // 입력받은 comment 객체 데이터 저장
+        this.user = user; // 입력받은 user 객체 데이터 저장
     }
 }

@@ -1,5 +1,6 @@
 package com.sparta.crud.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.sparta.crud.dto.BoardRequestDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,6 +26,11 @@ public class Board extends Timestamped{
     @JoinColumn(name = "USER_ID", nullable = false)
     private User user;
 
+    @OneToMany(mappedBy = "board", fetch=FetchType.LAZY, cascade = CascadeType.ALL)
+    @JsonIgnoreProperties({"board"})
+    @OrderBy("id desc")
+    private List<BoardLike> boardLikes = new ArrayList<>();
+
     @Column(nullable = false)
     private String title;
 
@@ -34,19 +40,24 @@ public class Board extends Timestamped{
     @Column(nullable = false)
     private String content;
 
-    @Column(nullable = false)
-    private String password;
+    @Column
+    private int likeCnt;
 
-    public Board(BoardRequestDto requestDto, String username, String password, User user) {
-        this.title = requestDto.getTitle();
-        this.content = requestDto.getContent();
-        this.username = username;
-        this.password = password;
-        this.user = user;
+    public Board(BoardRequestDto requestDto, String username, User user) {
+        this.title = requestDto.getTitle(); // requestDto에서 얻은 타이틀 데이터 저장
+        this.content = requestDto.getContent(); // requestDto에서 얻은 컨텐츠 데이터 저장
+        this.username = username; // 입력된 username 데이터를 저장
+        this.user = user; // user 객체 데이터 저장
+        this.boardLikes = getBoardLikes(); // 필드에서 게시글 좋아요 데이터 저장
+        this.likeCnt = getLikeCnt(); // 필드에서 게시글 좋아요 갯수 데이터 저장
     }
 
     public void update(BoardRequestDto requestDto) {
-        this.title = requestDto.getTitle();
-        this.content = requestDto.getContent();
+        this.title = requestDto.getTitle(); // requestDto에서 받은 타이틀 값을 저장
+        this.content = requestDto.getContent(); // requestDto에서 받은 컨텐츠 값을 저장
+    }
+
+    public void update_Cnt(int likeCnt) {
+        this.likeCnt = likeCnt;
     }
 }

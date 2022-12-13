@@ -3,7 +3,6 @@ package com.sparta.crud.dto;
 public enum StatusEnum {
 
     OK(200, "성공");
-
     int statusCode;
     String msg;
 

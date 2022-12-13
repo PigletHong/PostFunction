@@ -19,15 +19,15 @@ import javax.validation.Valid;
 @RequiredArgsConstructor
 public class UserController {
 
-    private final UserService userService;
+    private final UserService userService; // Userservice 기능 사용 위해 의존성 주입
 
-    // 회원 가입(아이디 중복검사 포함)
+    // 회원가입 기능
     @PostMapping("/signup")
     public ResponseEntity<ResponseDto> signup(@RequestBody @Valid SignupRequestDto signupRequestDto) {
         return ResponseEntity.ok().body(userService.signup(signupRequestDto));
     }
 
-    // 로그인(성공시 토큰 발급)
+    // 로그인 기능
     @PostMapping("/login")
     public ResponseEntity<ResponseDto> login(
             @RequestBody LoginRequestDto loginRequestDto,

@@ -21,8 +21,10 @@ public class BoardLike extends Timestamped{
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+
+
     public BoardLike(Board board ,User user){
-        this.board = board;
-        this.user = user;
+        this.board = board; // 입력받은 board 객체 데이터를 저장
+        this.user = user; // 입력받은 user 객체 데이터를 저장
     }
 }

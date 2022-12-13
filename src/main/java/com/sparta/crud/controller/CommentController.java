@@ -17,9 +17,10 @@ import javax.servlet.http.HttpServletRequest;
 @RequiredArgsConstructor
 public class CommentController {
 
-    private final CommentService commentService;
+    private final CommentService commentService; // CommentService 기능 사용을 위하여 의존성 주입
 
-    // 댓글 작성
+
+    // 댓글 달기
     @PostMapping("/save/comment/{id}")
     public ResponseEntity<ResponseDto> addComment(
             @PathVariable Long id,
@@ -43,12 +44,14 @@ public class CommentController {
         return ResponseEntity.ok().body(commentService.deleteComment(boardId, cmtId, userDetails.getUser()));
     }
 
+    // 댓글 좋아요
     @PostMapping("save/comment/like/{id}")
     public ResponseEntity<ResponseDto> addlike(
             @PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return ResponseEntity.ok(commentService.addlike(id, userDetails.getUser()));
     }
 
+    // 댓글 삭제
     @DeleteMapping("delete/comment/like/{id}")
     public ResponseEntity<ResponseDto> deletelike(
             @PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails) {

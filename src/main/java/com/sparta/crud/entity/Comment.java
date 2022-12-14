@@ -15,7 +15,7 @@ import java.util.List;
 public class Comment extends Timestamped{
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
@@ -27,7 +27,6 @@ public class Comment extends Timestamped{
     private User user;
 
     @OneToMany(mappedBy = "comment", fetch=FetchType.LAZY, cascade = CascadeType.ALL)
-    @JsonIgnoreProperties({"comment"})
     @OrderBy("id desc")
     private List<CommentLike> commentLikes;
 

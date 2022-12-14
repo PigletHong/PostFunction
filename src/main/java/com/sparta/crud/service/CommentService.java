@@ -2,19 +2,14 @@ package com.sparta.crud.service;
 
 import com.sparta.crud.dto.*;
 import com.sparta.crud.entity.*;
-import com.sparta.crud.jwt.JwtUtil;
 import com.sparta.crud.repository.BoardRepository;
 import com.sparta.crud.repository.CommentLikeRepository;
 import com.sparta.crud.repository.CommentRepository;
-import com.sparta.crud.repository.UserRepository;
-import com.sparta.crud.util.exception.CutomException;
-import io.jsonwebtoken.Claims;
+import com.sparta.crud.util.exception.CustomException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.servlet.http.HttpServletRequest;
 
 import java.util.Optional;
 
@@ -32,7 +27,7 @@ public class CommentService {
     @Transactional
     public ResponseDto addComment(Long id, CommentRequestDto commentRequestDto, User user) {
         Board board = boardRepository.findById(id).orElseThrow(
-                () -> new CutomException(NOT_FOUND_BOARD)
+                () -> new CustomException(NOT_FOUND_BOARD)
         );
         // 전달받은 게시글 ID로 게시글 DB에 일치하는 것이 있는지 확인
 
@@ -45,7 +40,7 @@ public class CommentService {
     @Transactional
     public ResponseDto updateComment(Long boardId, Long commentId, CommentRequestDto commentRequestDto, User user) {
         Board board = boardRepository.findById(boardId).orElseThrow(
-                () -> new CutomException(NOT_FOUND_BOARD)
+                () -> new CustomException(NOT_FOUND_BOARD)
         );
         // board 객체에 게시판 ID로 DB에서 가져온 데이터를 저장
             UserRoleEnum userRoleEnum = user.getRole();
@@ -54,12 +49,12 @@ public class CommentService {
 
             if (userRoleEnum == UserRoleEnum.ADMIN) {
                 comment = commentRepository.findById(commentId).orElseThrow(
-                        () -> new CutomException(NOT_FOUND_COMMENT)
+                        () -> new CustomException(NOT_FOUND_COMMENT)
                 );
                 // 유저의 권한이 ADMIN이라면 comment 객체에 댓글 ID로 찾은 데이터를 저장 -> 아니면 예외 처리 문구
             } else {
                 comment = commentRepository.findByIdAndUserId(commentId, user.getId()).orElseThrow(
-                        () -> new CutomException(AUTHORIZATION)
+                        () -> new CustomException(AUTHORIZATION)
                 );
                 // 유저의 권한이 ADMIN이 아니라면 comment 객체에 댓글 ID랑 유저 ID로 찾아서 일치하는 데이터를 저장 -> 아니면 예외 처리
             }
@@ -71,7 +66,7 @@ public class CommentService {
     @Transactional
     public ResponseDto deleteComment(Long boardId, Long commentID, User user) {
         Board board = boardRepository.findById(boardId).orElseThrow(
-                () -> new CutomException(NOT_FOUND_BOARD)
+                () -> new CustomException(NOT_FOUND_BOARD)
         );
         // board 객체에 DB에서 게시판 ID로 찾은 데이터를 저장
             UserRoleEnum userRoleEnum = user.getRole();
@@ -80,12 +75,12 @@ public class CommentService {
 
             if (userRoleEnum == UserRoleEnum.ADMIN) {
                 comment = commentRepository.findById(commentID).orElseThrow(
-                        () -> new CutomException(NOT_FOUND_COMMENT)
+                        () -> new CustomException(NOT_FOUND_COMMENT)
                 );
                 // 유저 권한이 ADMIN이라면 댓글 ID로 찾은 데이터를 comment 객체에 저장
             } else {
                 comment = commentRepository.findByIdAndUserId(commentID, user.getId()).orElseThrow(
-                        () -> new CutomException(AUTHORIZATION)
+                        () -> new CustomException(AUTHORIZATION)
                 );
                 // 유저 권한이 ADMIN이 아니라면 댓글 ID와 유저의 ID가 일치하는 데이터를 DB에서 찾아서 comment 객체에 저장
             }
@@ -99,7 +94,7 @@ public class CommentService {
     @Transactional
     public ResponseDto addlike(Long id, User user) {
                 Comment comment = commentRepository.findById(id).orElseThrow(
-                () -> new CutomException(NOT_FOUND_COMMENT)
+                () -> new CustomException(NOT_FOUND_COMMENT)
         );
                 // 댓글 ID로 DB에서 같은 데이터가 있는지 확인 -> 있으면 예외 처리 문구
 
@@ -107,7 +102,7 @@ public class CommentService {
         // comment와 user로 DB에 조회 후 데이터를 found 객체에 저장, NPE 피하기 위해서 Optional로 감싸서 선언
 
         if (found.isPresent()) {
-            throw new CutomException(DUPLICATE_RESOURCE);
+            throw new CustomException(DUPLICATE_RESOURCE);
         }
         // 이미 데이터가 있을 경우 예외 처리 문구
 
@@ -123,12 +118,12 @@ public class CommentService {
     @Transactional
     public ResponseDto deletelike(Long id, User user) {
         Comment comment = commentRepository.findById(id).orElseThrow(
-                () -> new CutomException(NOT_FOUND_COMMENT)
+                () -> new CustomException(NOT_FOUND_COMMENT)
         );
         // 댓글 ID로 DB에서 데이터 저장 -> 없으면 예외 처리
 
         commentLikeRepository.findByCommentAndUser(comment, user).orElseThrow(
-                () -> new CutomException(DUPLICATE_RESOURCE)
+                () -> new CustomException(DUPLICATE_RESOURCE)
         );
         // comment와 user 객체 데이터로 댓글 좋아요 DB에서 일치하는 데이터 있나 확인 -> 없으면 예외 처리
         commentLikeRepository.deleteByCommentAndUser(comment, user);

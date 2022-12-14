@@ -2,12 +2,9 @@ package com.sparta.crud.service;
 
 import com.sparta.crud.dto.*;
 import com.sparta.crud.entity.*;
-import com.sparta.crud.jwt.JwtUtil;
 import com.sparta.crud.repository.BoardLikeRepository;
 import com.sparta.crud.repository.BoardRepository;
-import com.sparta.crud.repository.UserRepository;
-import com.sparta.crud.util.exception.CutomException;
-import com.sparta.crud.util.exception.ErrorCode;
+import com.sparta.crud.util.exception.CustomException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -78,13 +75,13 @@ public class BoardService {
 
             if (userRoleEnum == UserRoleEnum.ADMIN) {
                 board = boardRepository.findById(id).orElseThrow(
-                        () -> new CutomException(NOT_FOUND_BOARD)
+                        () -> new CustomException(NOT_FOUND_BOARD)
                 );
                 // 입력받은 게시글의 ID와 일치하는 데이터가 있는지 확인 -> 없으면 예외 처리
 
             } else {
                 board = boardRepository.findByIdAndUserId(id, user.getId()).orElseThrow(
-                        () -> new CutomException(AUTHORIZATION)
+                        () -> new CustomException(AUTHORIZATION)
                         // 입력 받은 게시글의 ID와 토큰에서 가져온 userId가 일치하는지 DB 조회 -> 없으면 예외 처리
                 );
             }
@@ -111,13 +108,13 @@ public class BoardService {
 
             if (userRoleEnum == UserRoleEnum.ADMIN) {
                 board = boardRepository.findById(id).orElseThrow(
-                        () -> new CutomException(NOT_FOUND_BOARD)
+                        () -> new CustomException(NOT_FOUND_BOARD)
                 );
                 // 입력받은 게시글 ID와 동일한 데이터가 있는지 확인
 
             } else {
                 board = boardRepository.findByIdAndUserId(id, user.getId()).orElseThrow(
-                        () -> new CutomException(AUTHORIZATION)
+                        () -> new CustomException(AUTHORIZATION)
                 );
             }
             // 게시글 ID와 유저의 ID가 일치하는 데이터가 있는지 확인
@@ -131,7 +128,7 @@ public class BoardService {
     public ResponseDto addlike(Long id, User user) {
 
         Board board = boardRepository.findById(id).orElseThrow(
-                () -> new CutomException(NOT_FOUND_BOARD)
+                () -> new CustomException(NOT_FOUND_BOARD)
         );
         // 게시글 DB에서 입력받은 게시글 ID와 일치하는 것이 있는지 확인
 
@@ -139,7 +136,7 @@ public class BoardService {
         // NPE을 피하기 위해서 Optional로 감싸준 후 게시글 좋아요 DB에서 보드와 유저 데이터로 찾은 값을 found에 담는다.
 
         if (found.isPresent()) {
-            throw new CutomException(DUPLICATE_RESOURCE);
+            throw new CustomException(DUPLICATE_RESOURCE);
         }
         // 이미 데이터가 존재한다면 예외 처리 반환 -> .isPresent는 있으면 True, 없으면 False
 
@@ -154,11 +151,11 @@ public class BoardService {
 
     public ResponseDto deletelike(Long id, User user) {
         Board board = boardRepository.findById(id).orElseThrow(
-                () -> new CutomException(NOT_FOUND_BOARD)
+                () -> new CustomException(NOT_FOUND_BOARD)
         );
         // 게시글 DB에서 입력받은 게시글 ID가 있나 조회 -> 없으면 예외 처리 문구
         boardLikeRepository.findByBoardAndUser(board, user).orElseThrow(
-                () -> new CutomException(DUPLICATE_RESOURCE)
+                () -> new CustomException(DUPLICATE_RESOURCE)
         );
         // 게시글 DB에서 board와 user 데이터로 조회 -> 없으면 예외 처리 문구
         board.update_Cnt(board.getLikeCnt() - 1);

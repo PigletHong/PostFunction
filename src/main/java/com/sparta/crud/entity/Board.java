@@ -15,10 +15,10 @@ import java.util.List;
 public class Board extends Timestamped{
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToMany(mappedBy = "board", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL)
     @OrderBy("createdAt DESC")
     private List<Comment> comments = new ArrayList<>();
 
@@ -27,7 +27,6 @@ public class Board extends Timestamped{
     private User user;
 
     @OneToMany(mappedBy = "board", fetch=FetchType.LAZY, cascade = CascadeType.ALL)
-    @JsonIgnoreProperties({"board"})
     @OrderBy("id desc")
     private List<BoardLike> boardLikes = new ArrayList<>();
 
